@@ -7,7 +7,7 @@ fi
 
 read -p "Ask Groq: " QUESTION
 
-curl -s https://api.groq.com/openai/v1/chat/completions \
+RESPONSE=$(curl -s https://api.groq.com/openai/v1/chat/completions \
   -H "Authorization: Bearer $GROQ_API_KEY" \
   -H "Content-Type: application/json" \
   -d "{
@@ -15,6 +15,8 @@ curl -s https://api.groq.com/openai/v1/chat/completions \
     \"messages\": [
       {\"role\": \"user\", \"content\": \"$QUESTION\"}
     ],
-    \"temperature\": 0.5,
+    \"temperature\": 0.4,
     \"max_tokens\": 800
-  }" | jq -r '.choices[0].message.content'
+  }")
+
+echo "$RESPONSE" | sed -n 's/.*"content":"\([^"]*\)".*/\1/p' | sed 's/\\n/\n/g'
